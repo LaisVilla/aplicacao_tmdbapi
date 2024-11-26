@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Filmes e Séries - TMDB{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-dark text-light py-5">
+    <div class="container">
+        <h1 class="display-4 mb-4" style="font-family: 'Montserrat', sans-serif; font-weight: 500;">Descubra Novos Universos Cinematográficos</h1>
+        <p class="lead mb-4" style="font-family: 'Open Sans', sans-serif; font-size: 1.2rem;">Explore um vasto catálogo de filmes e séries em um só lugar!</p>
+        <form action="{{ url_for('search') }}" method="get" class="mb-4">
+            <div class="input-group input-group-lg">
+                <input type="text" name="query" class="form-control bg-secondary text-light border-0" placeholder="O que você quer assistir hoje?" value="{{ query }}" style="font-family: 'Roboto', sans-serif; border-radius: 30px 0 0 30px;">
+                <button type="submit" class="btn btn-warning" style="font-family: 'Roboto', sans-serif; font-weight: 500; border-radius: 0 30px 30px 0;">
+                    <i class="fas fa-search me-2"></i> Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container mt-5">
+    {% if movies %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for movie in movies %}
+        <div class="col">
+            <div class="card h-100 bg-dark text-light border-0 shadow-sm hover-effect">
+                {% if movie.poster_path %}
+                <img src="{{ poster_base_url }}{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}" style="border-radius: 15px 15px 0 0;">
+                {% else %}
+                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px; border-radius: 15px 15px 0 0;">
+                    <i class="fas fa-film fa-3x"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" style="font-family: 'Montserrat', sans-serif; font-weight: 600;">{{ movie.title }}</h5>
+                    <p class="card-text flex-grow-1" style="font-family: 'Open Sans', sans-serif;">{{ movie.overview[:100] }}...</p>
+                    <div class="mt-auto">
+                        <p class="card-text d-flex justify-content-between align-items-center">
+                            <span class="text-warning" style="font-family: 'Roboto', sans-serif;">
+                                <i class="fas fa-star"></i> {{ movie.vote_average|default('N/A', true) }}
+                            </span>
+                            <small class="text-muted" style="font-family: 'Roboto', sans-serif;">
+                                <i class="far fa-calendar-alt me-1"></i> {{ movie.release_date|default('Data não disponível', true) }}
+                            </small>
+                        </p>
+                        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="btn btn-outline-warning w-100" style="font-family: 'Roboto', sans-serif; font-weight: 500; border-radius: 20px;">Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% elif query %}
+    <div class="alert alert-warning" role="alert" style="font-family: 'Open Sans', sans-serif; border-radius: 15px;">
+        <i class="fas fa-exclamation-triangle me-2"></i> Nenhum resultado encontrado para "{{ query }}". Que tal tentar outra busca?
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&family=Roboto:wght@400;500&display=swap');
+    
+    .hover-effect {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .input-group .form-control:focus,
+    .input-group .btn:focus {
+        box-shadow: none;
+        border-color: #ffc107;
+    }
+</style>
+{% endblock %}

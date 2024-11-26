@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - TMDB{% endblock %}
+
+{% block content %}
+<div class="movie-header" style="background-image: url('{{ backdrop_base_url }}{{ movie.backdrop_path }}');">
+    <div class="overlay"></div>
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-light">Home</a></li>
+                <li class="breadcrumb-item active text-light" aria-current="page">{{ movie.title }}</li>
+            </ol>
+        </nav>
+        <div class="row align-items-center">
+            <div class="col-lg-4 mb-4">
+                {% if movie.poster_path %}
+                <img src="{{ poster_base_url }}{{ movie.poster_path }}" class="img-fluid rounded shadow-lg poster" alt="{{ movie.title }}">
+                {% endif %}
+            </div>
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3 text-white">{{ movie.title }}</h1>
+                {% if movie.tagline %}
+                <p class="lead font-italic text-light mb-4">"{{ movie.tagline }}"</p>
+                {% endif %}
+
+                <div class="d-flex flex-wrap justify-content-start align-items-center mb-4">
+                    <div class="me-4 mb-2">
+                        <i class="fas fa-star text-warning"></i>
+                        <span class="h5 ms-2 text-white">{{ "%.1f"|format(movie.vote_average) }}/10</span>
+                    </div>
+                    <div class="me-4 mb-2">
+                        <i class="far fa-calendar-alt text-info"></i>
+                        <span class="ms-2 text-white">{{ movie.release_date }}</span>
+                    </div>
+                    <div>
+                        {% for genre in movie.genres %}
+                        <span class="badge bg-secondary text-light me-2 mb-2">{{ genre.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button id="favoriteBtn" class="btn btn-outline-warning mb-4 me-2">
+                    <i class="far fa-heart"></i> Favoritar
+                </button>
+                <button id="watchTrailerBtn" class="btn btn-warning mb-4" style="display: none;">
+                    <i class="fas fa-play"></i> Assistir Trailer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h3 class="h4 mb-3 text-light">Sinopse</h3>
+            <p class="text-light">{{ movie.overview }}</p>
+
+            <div id="trailer-container" class="mt-4 mb-4">
+                <!-- O iframe do YouTube será inserido aqui via JavaScript -->
+            </div>
+
+            <div id="streaming-info" class="mt-4 mb-4">
+                <h3 class="h4 mb-3 text-light">Onde Assistir</h3>
+                <div id="streaming-platforms"></div>
+            </div>
+
+            {% if movie.credits.cast %}
+            <h3 class="h4 mt-5 mb-3 text-light">Elenco Principal</h3>
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+                {% for actor in movie.credits.cast[:6] %}
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm bg-dark">
+                        {% if actor.profile_url %}
+                        <img src="{{ actor.profile_url }}" class="card-img-top" alt="{{ actor.name }}">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 225px;">
+                            <i class="fas fa-user fa-3x text-light"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title fs-6 text-light">{{ actor.name }}</h5>
+                            <p class="card-text text-muted small">{{ actor.character }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-4">
+            <!-- Aqui você pode adicionar informações adicionais, como avaliações, curiosidades, etc. -->
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #343a40;
+        color: #f8f9fa;
+    }
+    .movie-header {
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        padding: 50px 0;
+        margin-bottom: 30px;
+    }
+    .movie-header .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+    }
+    .movie-header .container {
+        position: relative;
+        z-index: 1;
+    }
+    .poster {
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .streaming-button {
+        display: inline-block;
+        margin: 5px;
+        padding: 8px 15px;
+        background-color: #ffc107;
+        color: #343a40;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+    .streaming-button:hover {
+        background-color: #e0a800;
+    }
+    .card-img-top {
+        height: 225px;
+        object-fit: cover;
+    }
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+    }
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">";
+        color: rgba(255,255,255,0.5);
+    }
+    .breadcrumb-item a {
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .breadcrumb-item a:hover {
+        color: #ffc107;
+    }
+    .breadcrumb-item.active {
+        color: rgba(255,255,255,0.7);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let trailerKey = null;
+        fetch('/movie/{{ movie.id }}/trailer')
+            .then(response => response.json())
+            .then(data => {
+                if (data.trailer_key) {
+                    trailerKey = data.trailer_key;
+                    const watchTrailerBtn = document.getElementById('watchTrailerBtn');
+                    watchTrailerBtn.style.display = 'inline-block';
+                    watchTrailerBtn.addEventListener('click', function() {
+                        const trailerContainer = document.getElementById('trailer-container');
+                        trailerContainer.innerHTML = `
+                            <h3 class="h4 mb-3 text-light">Trailer</h3>
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/${trailerKey}" allowfullscreen></iframe>
+                            </div>
+                        `;
+                        trailerContainer.scrollIntoView({behavior: 'smooth'});
+                    });
+                }
+            })
+            .catch(error => console.error('Erro ao carregar o trailer:', error));
+
+        const favoriteBtn = document.getElementById('favoriteBtn');
+        favoriteBtn.addEventListener('click', function() {
+            if (favoriteBtn.classList.contains('btn-outline-warning')) {
+                favoriteBtn.classList.remove('btn-outline-warning');
+                favoriteBtn.classList.add('btn-warning');
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i> Favoritado';
+            } else {
+                favoriteBtn.classList.remove('btn-warning');
+                favoriteBtn.classList.add('btn-outline-warning');
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i> Favoritar';
+            }
+            // Aqui você pode adicionar a lógica para salvar o estado do favorito
+        });
+
+        // Carregar informações de streaming
+        fetch('/movie/{{ movie.id }}/platforms')
+            .then(response => response.json())
+            .then(data => {
+                const streamingPlatforms = document.getElementById('streaming-platforms');
+                let content = '';
+
+                if (data.flatrate && data.flatrate.length > 0) {
+                    content += '<h5 class="text-light">Streaming:</h5>';
+                    data.flatrate.forEach(platform => {
+                        content += `<a href="${platform.link}" target="_blank" class="streaming-button">${platform.provider_name}</a>`;
+                    });
+                }
+
+                if (data.rent && data.rent.length > 0) {
+                    content += '<h5 class="text-light">Aluguel:</h5>';
+                    data.rent.forEach(platform => {
+                        content += `<a href="${platform.link}" target="_blank" class="streaming-button">${platform.provider_name}</a>`;
+                    });
+                }
+
+                if (data.buy && data.buy.length > 0) {
+                    content += '<h5 class="text-light">Compra:</h5>';
+                    data.buy.forEach(platform => {
+                        content += `<a href="${platform.link}" target="_blank" class="streaming-button">${platform.provider_name}</a>`;
+                    });
+                }
+
+                if (content === '') {
+                    content = '<p class="text-light">Informações de streaming não disponíveis.</p>';
+                }
+
+                streamingPlatforms.innerHTML = content;
+            })
+            .catch(error => console.error('Erro ao carregar informações de streaming:', error));
+    });
+</script>
+{% endblock %}

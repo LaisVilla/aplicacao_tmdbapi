@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5" style="background-color: #343a40; color: #f8f9fa;">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="text-center font-weight-light my-4">Criar Conta</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('register') }}">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control bg-secondary text-white" id="name" name="name" placeholder="Seu nome completo" required>
+                            <label for="name" class="text-white">Nome Completo</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control bg-secondary text-white" id="email" name="email" placeholder="nome@exemplo.com" required>
+                            <label for="email" class="text-white">Email</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control bg-secondary text-white" id="password" name="password" placeholder="Senha" required>
+                            <label for="password" class="text-white">Senha</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control bg-secondary text-white" id="confirm_password" name="confirm_password" placeholder="Confirme sua senha" required>
+                            <label for="confirm_password" class="text-white">Confirmar Senha</label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label text-white" for="terms">
+                                Eu concordo com os <a href="#" class="text-warning">Termos de Uso</a> e <a href="#" class="text-warning">Política de Privacidade</a>
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg">Criar Conta</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3" style="background-color: #212529;">
+                    <div class="small"><a href="{{ url_for('login') }}" class="text-white">Já tem uma conta? Faça login!</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

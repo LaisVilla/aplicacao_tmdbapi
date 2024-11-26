@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Filmes - TMDB{% endblock %}
+
+{% block content %}
+<h1 class="display-4 text-center mb-5 text-light">Explore o Universo Cinematográfico</h1>
+
+<div class="carousel-section mb-5">
+    <h2 class="carousel-title">Recomendados para Você</h2>
+    <div class="owl-carousel owl-theme" id="recommended-carousel">
+        {% for movie in recommended_movies %}
+        <div class="item">
+            <div class="card h-100 shadow-sm hover-effect bg-dark">
+                {% if movie.poster_path %}
+                <img src="{{ poster_base_url }}{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}">
+                {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary" style="height: 300px;">
+                    <i class="fas fa-film fa-3x text-light"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-light">{{ movie.title }}</h5>
+                    <p class="card-text text-light"><i class="fas fa-star text-warning"></i> {{ "%.1f"|format(movie.vote_average) }}/10</p>
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="btn btn-outline-warning mt-auto">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="carousel-section mb-5">
+    <h2 class="carousel-title">Últimos Lançamentos</h2>
+    <div class="owl-carousel owl-theme" id="new-releases-carousel">
+        {% for movie in new_releases %}
+        <div class="item">
+            <div class="card h-100 shadow-sm hover-effect bg-dark">
+                {% if movie.poster_path %}
+                <img src="{{ poster_base_url }}{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}">
+                {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary" style="height: 300px;">
+                    <i class="fas fa-film fa-3x text-light"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-light">{{ movie.title }}</h5>
+                    <p class="card-text text-light"><i class="fas fa-star text-warning"></i> {{ "%.1f"|format(movie.vote_average) }}/10</p>
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="btn btn-outline-warning mt-auto">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="carousel-section mb-5">
+    <h2 class="carousel-title">Tendências da Semana</h2>
+    <div class="owl-carousel owl-theme" id="trending-carousel">
+        {% for movie in trending_movies %}
+        <div class="item">
+            <div class="card h-100 shadow-sm hover-effect bg-dark">
+                {% if movie.poster_path %}
+                <img src="{{ poster_base_url }}{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}">
+                {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary" style="height: 300px;">
+                    <i class="fas fa-film fa-3x text-light"></i>
+                </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-light">{{ movie.title }}</h5>
+                    <p class="card-text text-light"><i class="fas fa-star text-warning"></i> {{ "%.1f"|format(movie.vote_average) }}/10</p>
+                    <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="btn btn-outline-warning mt-auto">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #343a40;
+        color: #f8f9fa;
+    }
+    .hover-effect {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .carousel-section {
+        margin-bottom: 4rem;
+        padding: 2rem;
+        background-color: #212529;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .carousel-title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: #f8f9fa;
+        font-weight: bold;
+    }
+    .owl-carousel .item {
+        margin: 0 15px;
+    }
+    .owl-carousel .item img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .card-body {
+        padding: 1.5rem;
+    }
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .card-text {
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+    .btn-outline-warning {
+        border-width: 2px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: #343a40;
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        $(".owl-carousel").owlCarousel({
+            loop: true,
+            margin: 20,
+            nav: true,
+            dots: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplayHoverPause: true,
+            responsive:{
+                0:{
+                    items:1
+                },
+                600:{
+                    items:2
+                },
+                1000:{
+                    items:4
+                }
+            },
+            navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>']
+        });
+    });
+</script>
+{% endblock %}
