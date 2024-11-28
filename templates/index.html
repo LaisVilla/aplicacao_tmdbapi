@@ -3,7 +3,10 @@
 {% block title %}Filmes - TMDB{% endblock %}
 
 {% block content %}
-<h1 class="display-4 text-center mb-5 text-light">Explore o Universo Cinematográfico</h1>
+<div class="welcome-message text-center mb-5">
+    <h1 class="display-4 text-light">Bem-vindo ao Nosso Universo Cinematográfico!</h1>
+    <p class="lead text-light">Explore, descubra e apaixone-se pelo mundo do cinema conosco.</p>
+</div>
 
 <div class="carousel-section mb-5">
     <h2 class="carousel-title">Recomendados para Você</h2>
@@ -135,6 +138,12 @@
     .btn-outline-warning:hover {
         background-color: #ffc107;
         color: #343a40;
+    }
+    .welcome-message {
+        background-color: rgba(33, 37, 41, 0.8);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 3rem;
     }
 </style>
 

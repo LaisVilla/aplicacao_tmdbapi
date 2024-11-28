@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="profile-content">
+    <div class="row">
+        <div class="col-md-3, col-lg-2 p-0 bg-dark text-white" style="min-height: 100vh; margin-left: -20px;">
+            <nav class="nav flex-column">
+                <div class="nav-group">
+                    <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" role="tab" aria-controls="profile" aria-selected="true"><i class="fas fa-user me-1"></i>Detalhes do Perfil</a>
+                </div>
+                <div class="nav-group">
+                    <a class="nav-link" id="activities-tab" data-bs-toggle="tab" data-bs-target="#activities" role="tab" aria-controls="activities" aria-selected="false"><i class="fas fa-chart-line me-1"></i>Atividades</a>
+                </div>
+                <div class="nav-group">
+                    <a class="nav-link" id="edit-profile-tab" data-bs-toggle="tab" data-bs-target="#edit-profile" role="tab" aria-controls="edit-profile" aria-selected="false"><i class="fas fa-edit me-1"></i>Editar Perfil</a>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="user-info">
+                                <div class="profile-picture mb-4">
+                                    <img src="{{ user.profile_picture if user.profile_picture else 'static/images/default-profile-picture.png' }}" alt="Foto de Perfil" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                                </div>
+                                <p><strong>Nome:</strong> {{ user.name }}</p>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                            </div>
+                            <div class="welcome-message mt-4">
+                                <h3 class="mb-3">Bem-vindo, {{ user.name }}!</h3>
+                                <p>É um prazer ter você aqui. Explore as nossas ofertas de filmes e séries, e não hesite em nos contatar se tiver alguma dúvida.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="activities" role="tabpanel" aria-labelledby="activities-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs" id="activities-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="watchlist-tab" data-bs-toggle="tab" data-bs-target="#watchlist" role="tab" aria-controls="watchlist" aria-selected="true">Minha Lista</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="activity-summary-tab" data-bs-toggle="tab" data-bs-target="#activity-summary" role="tab" aria-controls="activity-summary" aria-selected="false">Resumo de Atividades</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="activities-tabContent">
+                                <div class="tab-pane fade show active" id="watchlist" role="tabpanel" aria-labelledby="watchlist-tab">
+                                    <button type="button" class="btn btn-warning mb-2" data-bs-toggle="modal" data-bs-target="#watchlistModal">
+                                </div>
+                                <div class="tab-pane fade" id="activity-summary" role="tabpanel" aria-labelledby="activity-summary-tab">
+                                    <div class="activity-statistics">
+                                        <div class="statistic">
+                                            <p><strong>Total de Filmes Assistidos:</strong> {{ user.movies_watched }}</p>
+                                        </div>
+                                        <div class="statistic">
+                                            <p><strong>Séries Completadas:</strong> {{ user.series_completed }}</p>
+                                        </div>
+                                        <div class="statistic">
+                                            <p><strong>Total de Horas Assistidas:</strong> {{ user.total_hours_watched }} horas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data" class="edit-profile-form">
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Informações Pessoais</h4>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Segurança</h4>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Senha Atual</label>
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="new-password" class="form-label">Nova Senha</label>
+                                        <input type="password" class="form-control" id="new-password" name="new-password" required>
+                                        <div id="password-feedback" class="alert alert-warning d-none">
+                                            Senhas não correspondem.
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirm-password" class="form-label">Confirmar Nova Senha</label>
+                                        <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Foto de Perfil</h4>
+                                    <div class="mb-3">
+                                        <label for="profile-picture" class="form-label">Foto de Perfil</label>
+                                        <input type="file" class="form-control" id="profile-picture" name="profile-picture" accept="image/*" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

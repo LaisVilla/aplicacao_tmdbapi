@@ -179,6 +179,30 @@ def get_recommended():
         return jsonify(recommended_movies.get('results', [])[:10])
     return jsonify({"error": "Erro ao carregar filmes recomendados"}), 500
 
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    user_email = session['user_email']
+    user = users_collection.find_one({'email': user_email})
+    
+    if request.method == 'POST':
+        # Atualização da senha
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        
+        if not check_password_hash(user['password'], current_password):
+            flash('Senha atual incorreta.', 'error')
+        else:
+            hashed_password = generate_password_hash(new_password)
+            users_collection.update_one(
+                {'email': user_email},
+                {'$set': {'password': hashed_password}}
+            )
+            flash('Senha atualizada com sucesso!', 'success')
+    
+    return render_template('profile.html', user=user)
+
+
 @app.route('/search')
 def search():
     query = request.args.get('query', '')

@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <style>
         body {
-            background-color: #343a40;
-            color: #f8f9fa;
+            background-color: #343a40; /* Cor padrão da aplicação */
+            color: #f8f9fa; /* Cor padrão da aplicação */
             font-family: 'Roboto', sans-serif;
         }
         .navbar {
@@ -25,7 +25,7 @@
             margin-right: 2rem;
         }
         .navbar-brand:hover {
-            color: #ffc107 !important;
+            color: #ffc107 !important; /* Cor padrão da aplicação */
         }
         .nav-link {
             font-size: 1.1rem;
@@ -34,7 +34,7 @@
             position: relative;
         }
         .nav-link:hover {
-            color: #ffc107 !important;
+            color: #ffc107 !important; /* Cor padrão da aplicação */
         }
         .nav-link::after {
             content: '';
@@ -43,7 +43,7 @@
             height: 2px;
             bottom: -5px;
             left: 0;
-            background-color: #ffc107;
+            background-color: #ffc107; /* Cor padrão da aplicação */
             transition: width 0.3s ease;
         }
         .nav-link:hover::after {
@@ -60,12 +60,12 @@
         .search-form .form-control {
             padding-right: 70px;
             border-radius: 20px;
-            background-color: #495057;
-            color: #f8f9fa;
-            border: 1px solid #6c757d;
+            background-color: #495057; /* Cor padrão da aplicação */
+            color: #f8f9fa; /* Cor padrão da aplicação */
+            border: 1px solid #6c757d; /* Cor padrão da aplicação */
         }
         .search-form .form-control::placeholder {
-            color: #adb5bd;
+            color: #adb5bd; /* Cor padrão da aplicação */
         }
         .search-form .btn-search {
             position: absolute;
@@ -75,7 +75,7 @@
             padding: 6px 10px;
         }
         .search-form .btn-search i {
-            color: #f8f9fa;
+            color: #f8f9fa; /* Cor padrão da aplicação */
             font-size: 0.9rem;
         }
         .search-form .btn-filter {
@@ -86,20 +86,20 @@
             padding: 6px 10px;
         }
         .search-form .btn-filter i {
-            color: #f8f9fa;
+            color: #f8f9fa; /* Cor padrão da aplicação */
             font-size: 0.9rem;
         }
         .dropdown-menu {
             border: none;
             box-shadow: 0 0 10px rgba(0,0,0,.1);
-            background-color: #495057;
+            background-color: #495057; /* Cor padrão da aplicação */
         }
         .dropdown-item {
             transition: background-color 0.3s ease;
-            color: #f8f9fa;
+            color: #f8f9fa; /* Cor padrão da aplicação */
         }
         .dropdown-item:hover {
-            background-color: #6c757d;
+            background-color: #6c757d; /* Cor padrão da aplicação */
         }
         .carousel-section {
             margin-bottom: 3rem;
@@ -107,7 +107,7 @@
         .carousel-title {
             font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: #f8f9fa;
+            color: #f8f9fa; /* Cor padrão da aplicação */
         }
         .owl-carousel .item {
             margin: 0 10px;
@@ -116,6 +116,44 @@
             width: 100%;
             height: auto;
             border-radius: 8px;
+        }
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .user-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #495057; /* Cor padrão da aplicação */
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+            color: #f8f9fa; /* Cor padrão da aplicação */
+        }
+        .user-dropdown-content a {
+            color: #f8f9fa; /* Cor padrão da aplicação */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+        .user-dropdown-content a:hover {
+            background-color: #6c757d; /* Cor padrão da aplicação */
+        }
+        .fas.fa-user-circle {
+            color: #ffc107; /* Cor cinza por padrão */
+        }
+        .user-dropdown-content a:hover .fas.fa-user-circle {
+            color: #ffc107 !important; /* Cor amarela */
+        }
+        .user-dropdown:hover .user-dropdown-content {
+            display: block;
+        }
+        .btn.btn-outline-primary {
+            color: #ffc107 !important; /* Cor amarela */
+        }
+        .user-dropdown {
+            color: #ffc107 !important; /* Cor amarela */
         }
     </style>
 </head>
@@ -127,28 +165,31 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/watchlist"><i class="fas fa-list me-1"></i>Minha Lista</a>
+                        <a class="nav-link" href="/search?query=&type=movies">Filmes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/search?query=&type=series">Séries</a>
                     </li>
                 </ul>
-                <form class="d-flex search-form me-3" action="/search" method="get">
-                    <input class="form-control me-2" type="search" placeholder="Buscar filmes ou séries" aria-label="Search" name="query">
-                    <input type="hidden" name="type" id="searchType" value="all">
-                    <button class="btn-search" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button class="btn-filter" type="button" id="searchDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-caret-down"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="searchDropdown">
-                        <li><a class="dropdown-item" href="#" data-search-type="movies">Filmes</a></li>
-                        <li><a class="dropdown-item" href="#" data-search-type="series">Séries</a></li>
-                        <li><a class="dropdown-item" href="#" data-search-type="all">Todos</a></li>
-                    </ul>
-                </form>
-                <a href="/login" class="btn btn-outline-light me-2">Iniciar Sessão</a>
-                <a href="/register" class="btn btn-warning">Cadastrar-se</a>
+                <div class="ms-auto">
+                    {% if 'user_email' in session %}
+                        <div class="user-dropdown">
+                            <a class="btn btn-outline-primary" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i> {{ user_email }}
+                            </a>
+
+                            <div class="user-dropdown-content" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="/profile"><i class="fas fa-user-circle"></i> Perfil</a>
+                                <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="/login" class="btn btn-outline-light me-2">Iniciar Sessão</a>
+                        <a href="/register" class="btn btn-warning">Cadastrar-se</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
@@ -209,14 +250,6 @@
                         items:5
                     }
                 }
-            });
-
-            // Atualizar o tipo de busca quando uma opção é selecionada
-            $('.dropdown-item').click(function(e) {
-                e.preventDefault();
-                var searchType = $(this).data('search-type');
-                $('#searchType').val(searchType);
-                $('.search-form').submit();
             });
         });
     </script>
